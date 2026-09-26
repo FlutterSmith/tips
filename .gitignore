@@ -1,0 +1,19 @@
+# Dart / Flutter
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+.fvm/
+
+# Site
+node_modules/
+site/dist/
+site/.astro/
+site/src/generated/
+site/public/tips/
+
+# OS / editors
+.DS_Store
+*.swp

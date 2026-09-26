@@ -1,0 +1,96 @@
+---
+import '@fontsource-variable/anybody/wdth.css';
+import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+import '@fontsource/fragment-mono/400.css';
+import '@fontsource/kalam/400.css';
+import '../styles/global.css';
+
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { site, tips, url } from '../lib/site';
+
+interface Props {
+  title?: string;
+  description: string;
+  slug?: string;
+  noindex?: boolean;
+}
+
+const { title, description, slug, noindex = false } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name}: Flutter tips that still compile`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const slugs = JSON.stringify(tips.map((t) => t.slug));
+---
+
+<!doctype html>
+<html lang="en" data-base={url()} data-slug={slug}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:type" content={slug ? 'article' : 'website'} />
+    <meta property="og:title" content={title ?? site.name} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#EEF1F4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0B0F17" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={site.name} href={url('rss.xml')} />
+    <script is:inline>
+      // Set the theme before first paint so there is no flash.
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        try {
+          var t = localStorage.getItem('fs-theme');
+          if (t === 'light' || t === 'dark') d.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" class="wrap">
+      <slot />
+    </main>
+    <Footer />
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="pal-bg" id="pal" hidden>
+      <div class="pal" role="dialog" aria-modal="true" aria-label="Search tips">
+        <label class="visually-hidden" for="q">Search tips</label>
+        <input id="q" type="search" placeholder="Search titles or code, e.g. requireValue" autocomplete="off" />
+        <ul id="results" aria-live="polite"></ul>
+        <div class="pal-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> move</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div>
+      </div>
+    </div>
+
+    <div class="pal-bg" id="help" hidden>
+      <div class="pal" role="dialog" aria-modal="true" aria-labelledby="help-title">
+        <div class="sec-h" style="padding: 16px 18px 0; margin: 0">
+          <span class="label" id="help-title">Keyboard shortcuts</span>
+          <button type="button" class="tool" data-close-help>Close</button>
+        </div>
+        <dl class="help-list">
+          <dt><kbd>/</kbd></dt><dd>Search</dd>
+          <dt><kbd>r</kbd></dt><dd>Random tip</dd>
+          <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Previous / next tip</dd>
+          <dt><kbd>c</kbd></dt><dd>Copy the first snippet</dd>
+          <dt><kbd>p</kbd></dt><dd>Debug paint on / off</dd>
+          <dt><kbd>t</kbd></dt><dd>Theme: system, light, dark</dd>
+          <dt><kbd>?</kbd></dt><dd>This list</dd>
+        </dl>
+      </div>
+    </div>
+
+    <script type="application/json" id="tip-slugs" set:html={slugs} />
+    <script>
+      import '../scripts/app.ts';
+    </script>
+  </body>
+</html>

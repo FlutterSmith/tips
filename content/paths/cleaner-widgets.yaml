@@ -1,0 +1,10 @@
+title: Cleaner widget code
+summary: Small habits that make build methods shorter, layouts more predictable and rebuilds cheaper.
+tips:
+  - replace-container
+  - column-row-spacing
+  - sizedbox-shrink
+  - intrinsic-width
+  - mediaquery-sizeof
+  - context-mounted-async-gaps
+  - elevated-button-style

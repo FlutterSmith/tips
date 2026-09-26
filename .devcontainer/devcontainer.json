@@ -1,0 +1,14 @@
+{
+  "name": "fluttersmith/tips",
+  "image": "ghcr.io/cirruslabs/flutter:3.47.5",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": { "version": "22" }
+  },
+  "postCreateCommand": "(cd tool && dart pub get) && (cd examples && flutter pub get) && (cd site && npm ci)",
+  "forwardPorts": [4321],
+  "customizations": {
+    "vscode": {
+      "extensions": ["Dart-Code.flutter", "astro-build.astro-vscode"]
+    }
+  }
+}

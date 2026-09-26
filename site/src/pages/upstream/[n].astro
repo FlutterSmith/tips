@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import { tip, tipUrl, upstream } from '../../lib/site';
+
+// Keeps links to the original collection's numbering working.
+export function getStaticPaths() {
+  return Object.entries(upstream).map(([n, slug]) => ({ params: { n }, props: { slug } }));
+}
+
+const { slug } = Astro.props;
+const target = tipUrl(slug);
+---
+
+<Base title={tip(slug)?.title} description={`Moved to ${target}`} noindex>
+  <meta http-equiv="refresh" content={`0; url=${target}`} />
+  <header class="page-head">
+    <span class="label">Moved</span>
+    <h1>This tip lives here now</h1>
+    <p><a href={target}>{tip(slug)?.title}</a></p>
+  </header>
+</Base>

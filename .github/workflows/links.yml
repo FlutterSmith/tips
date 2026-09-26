@@ -1,0 +1,28 @@
+name: Links
+
+on:
+  schedule:
+    - cron: '41 5 * * 3'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --exclude-path site/node_modules './**/*.md'
+          fail: false
+      - name: Report broken links
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v6
+        with:
+          title: Broken links found
+          content-filepath: ./lychee/out.md
+          labels: links

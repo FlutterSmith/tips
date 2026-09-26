@@ -1,0 +1,27 @@
+{
+  "name": "tips-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "dart run ../tool/bin/tips.dart generate --site",
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.1",
+    "@astrojs/rss": "^4.0.19",
+    "@fontsource-variable/anybody": "^5.3.0",
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.3.0",
+    "@fontsource/fragment-mono": "^5.3.0",
+    "@fontsource/kalam": "^5.3.0",
+    "astro": "^7.3.5",
+    "hast-util-to-html": "^9.0.5",
+    "shiki": "^4.4.3",
+    "unist-util-visit": "^5.1.0"
+  },
+  "devDependencies": {
+    "pagefind": "^1.5.2"
+  }
+}

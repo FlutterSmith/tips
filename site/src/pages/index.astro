@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content';
+
+import CodePanel from '../components/CodePanel.astro';
+import TipRow from '../components/TipRow.astro';
+import Base from '../layouts/Base.astro';
+import { categories, firstAnnotatedSnippet, formatDate, paths, site, tip, tips, tipUrl, url } from '../lib/site';
+
+const entries = new Map((await getCollection('tips')).map((e) => [e.id, e]));
+const featured = tips
+  .map((t) => ({ tip: t, snippet: firstAnnotatedSnippet(entries.get(t.slug)?.body ?? '') }))
+  .filter((f) => f.snippet !== null)
+  .slice(0, 8);
+const latest = tips.slice(0, 6);
+const total = tips.length;
+const verified = site.verifiedAt ? formatDate(site.verifiedAt) : null;
+---
+
+<Base description={`${total} short Flutter and Dart tips. Every snippet is real code, analyzed and tested against Flutter ${site.flutter}.`}>
+  <section class="hero">
+    <div class="pb pad">
+      <h1 class="pb">Flutter tips that <em>still compile.</em></h1>
+      <p class="lede">
+        {total} short notes on Dart, widgets and Riverpod. Every snippet is real code, analyzed and tested against Flutter {site.flutter}.
+      </p>
+      <div class="cta">
+        <button class="btn btn-main" type="button" data-random>Random tip <kbd>r</kbd></button>
+        <a class="btn btn-ghost" href="#index">Browse the index</a>
+      </div>
+      <p class="verified">
+        <span class="dot" aria-hidden="true"></span>
+        <span>
+          {verified ? `Last check: ${verified}` : 'Checked on every change'}<br />
+          Flutter {site.flutter}{site.dart && ` · Dart ${site.dart}`} · {total}/{total} passing
+        </span>
+      </p>
+    </div>
+    <div class="featured pb">
+      {featured.map((f) => <CodePanel tip={f.tip} code={f.snippet!.code} meta={f.snippet!.meta} />)}
+    </div>
+  </section>
+
+  <div class="home-grid" id="index">
+    <nav class="pb" aria-labelledby="index-label">
+      <div class="sec-h"><span class="label" id="index-label">Index</span><a class="label" href={url('all/')}>{total} tips</a></div>
+      <ul class="tree">
+        <li class="root" aria-hidden="true">Tips(</li>
+        {
+          categories.map((c, i) => {
+            const last = i === categories.length - 1;
+            const kids = tips.filter((t) => t.category === c.id).slice(0, 5);
+            return (
+              <li>
+                <details open={i === 0}>
+                  <summary>
+                    <span class="br" aria-hidden="true">{last ? '└─' : '├─'}</span>
+                    <span class="nm">{c.label}</span>
+                    <span class="ct">{c.count}</span>
+                  </summary>
+                  <ul class="kids">
+                    {kids.map((k) => (
+                      <li>
+                        <a href={tipUrl(k.slug)}>
+                          <span class="br" aria-hidden="true">{last ? '   ' : '│  '}├─</span>
+                          {k.title}
+                        </a>
+                      </li>
+                    ))}
+                    <li>
+                      <a href={url(`c/${c.id}/`)}>
+                        <span class="br" aria-hidden="true">{last ? '   ' : '│  '}└─</span>
+                        All {c.count} in {c.label} →
+                      </a>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+            );
+          })
+        }
+        <li class="root" aria-hidden="true" style="padding-top: 8px">)</li>
+      </ul>
+    </nav>
+
+    <div>
+      <div class="sec-h"><span class="label">Latest</span><a class="label" href={url('rss.xml')}>RSS</a></div>
+      <ul class="rows">
+        {latest.map((t) => <TipRow tip={t} />)}
+      </ul>
+      {
+        paths.length > 0 && (
+          <div class="paths">
+            {paths.map((p) => (
+              <div class="path pb">
+                <span class="label">Path · {p.tips.length} tips</span>
+                <h3>
+                  <a href={url(`paths/${p.id}/`)}>{p.title}</a>
+                </h3>
+                <ol>
+                  {p.tips.slice(0, 4).map((s) => (
+                    <li>
+                      <a href={tipUrl(s)}>{tip(s)?.title}</a>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</Base>

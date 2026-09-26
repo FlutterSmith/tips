@@ -1,0 +1,19 @@
+---
+import { site, url } from '../lib/site';
+---
+
+<footer class="foot">
+  <div class="wrap">
+    <p>
+      Every snippet here is real code, analyzed and tested against Flutter {site.flutter}. Many tips are adapted from{' '}
+      <a href="https://github.com/bizz84/flutter-tips-and-tricks">Flutter Tips &amp; Tricks</a> by Andrea Bizzotto (MIT).
+      Not affiliated with or endorsed by the original author. <a href={`${site.repo}/blob/main/ATTRIBUTION.md`}>Attribution</a>.
+    </p>
+    <nav aria-label="Footer">
+      <a href={url('all/')}>All tips</a>
+      <a href={url('rss.xml')}>RSS</a>
+      <a href={`${site.repo}/blob/main/CONTRIBUTING.md`}>Contribute</a>
+      <a href={`${site.repo}/blob/main/LICENSE`}>MIT license</a>
+    </nav>
+  </div>
+</footer>

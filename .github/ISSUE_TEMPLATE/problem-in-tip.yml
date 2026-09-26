@@ -1,0 +1,20 @@
+name: Something's wrong in a tip
+description: A mistake, an outdated API, or a snippet that doesn't do what the tip says.
+labels: [bug]
+body:
+  - type: input
+    id: tip
+    attributes:
+      label: Which tip?
+      placeholder: https://fluttersmith.github.io/tips/tips/stopwatch-measure-time/
+    validations: { required: true }
+  - type: textarea
+    id: what
+    attributes:
+      label: What's wrong, and what should it say?
+    validations: { required: true }
+  - type: input
+    id: version
+    attributes:
+      label: Flutter version (if relevant)
+      placeholder: flutter --version

@@ -1,0 +1,33 @@
+---
+import TipRow from '../../components/TipRow.astro';
+import Base from '../../layouts/Base.astro';
+import { categories, tips, url } from '../../lib/site';
+
+export function getStaticPaths() {
+  return categories.map((c) => ({ params: { category: c.id }, props: { category: c } }));
+}
+
+const { category } = Astro.props;
+const list = tips.filter((t) => t.category === category.id);
+---
+
+<Base title={category.label} description={`${list.length} tips about ${category.label.toLowerCase()} in Flutter and Dart.`}>
+  <header class="page-head pb">
+    <span class="label">Category · {list.length} tips</span>
+    <h1>{category.label}</h1>
+    <ul class="chips" aria-label="Categories">
+      {
+        categories.map((c) => (
+          <li>
+            <a href={url(`c/${c.id}/`)} aria-current={c.id === category.id ? 'page' : undefined}>
+              {c.label} {c.count}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </header>
+  <ul class="rows list">
+    {list.map((t) => <TipRow tip={t} />)}
+  </ul>
+</Base>

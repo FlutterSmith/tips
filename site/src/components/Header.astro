@@ -1,0 +1,25 @@
+---
+import { site, url } from '../lib/site';
+---
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href={url()} aria-label={`${site.name}, home`}>fluttersmith<b>/</b><i>tips</i></a>
+    <span class="spacer"></span>
+    <button class="search-btn" id="open-search" type="button" aria-label="Search tips">
+      <span class="txt">Search tips or APIs</span><kbd>/</kbd>
+    </button>
+    <button class="tool" id="paint" type="button" aria-pressed="false" title="Debug paint (p)">
+      <span class="switch" aria-hidden="true"></span><span class="hide-sm">Paint</span>
+    </button>
+    <button class="tool" id="theme" type="button" title="Theme (t)" aria-label="Change theme">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+        <path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"></path>
+      </svg>
+      <span id="theme-label" class="hide-sm">System</span>
+    </button>
+    <a class="tool hide-sm" href={site.repo}>GitHub ↗</a>
+  </div>
+  <div class="progress" id="progress"></div>
+</header>

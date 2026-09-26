@@ -1,0 +1,23 @@
+---
+import TipRow from '../../components/TipRow.astro';
+import Base from '../../layouts/Base.astro';
+import { paths, tip, type TipMeta } from '../../lib/site';
+
+export function getStaticPaths() {
+  return paths.map((p) => ({ params: { id: p.id }, props: { path: p } }));
+}
+
+const { path } = Astro.props;
+const list = path.tips.map(tip).filter((t): t is TipMeta => !!t);
+---
+
+<Base title={path.title} description={path.summary}>
+  <header class="page-head pb">
+    <span class="label">Learning path · {list.length} tips, in order</span>
+    <h1>{path.title}</h1>
+    <p>{path.summary}</p>
+  </header>
+  <ol class="rows list" style="list-style: none; padding: 0">
+    {list.map((t) => <TipRow tip={t} />)}
+  </ol>
+</Base>

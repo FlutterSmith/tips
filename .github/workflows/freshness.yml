@@ -1,0 +1,59 @@
+name: Freshness
+
+# Weekly: does everything still compile on the newest Flutter stable and the
+# newest versions of our dependencies? If not, open (or update) one issue.
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  latest-stable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: Upgrade dependencies to their latest major versions
+        working-directory: examples
+        run: flutter pub upgrade --major-versions
+      - id: check
+        name: Analyze and test
+        working-directory: examples
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          {
+            echo "## Flutter"; flutter --version
+            echo; echo "## Analyze"; flutter analyze lib test
+            echo; echo "## Test"; flutter test
+          } 2>&1 | tee ../drift.log
+      - name: Broken examples still fail as documented
+        id: broken
+        continue-on-error: true
+        run: |
+          (cd tool && dart pub get)
+          dart run tool/bin/tips.dart check-broken 2>&1 | tee -a drift.log
+      - name: Open or update the drift issue
+        if: steps.check.outcome == 'failure' || steps.broken.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "The weekly check against the newest Flutter stable and dependencies failed."
+            echo "Tips affected by these errors need updating (or an \`outdated\` status)."
+            echo; echo '<details><summary>Log</summary>'; echo; echo '```'
+            tail -c 60000 drift.log; echo '```'; echo '</details>'
+          } > body.md
+          number=$(gh issue list --label toolchain-drift --state open --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file body.md
+          else
+            gh label create toolchain-drift --color F2B705 --description "A tip no longer compiles on the latest toolchain" 2>/dev/null || true
+            gh issue create --title "Toolchain drift: tips no longer compile on the latest stable" --label toolchain-drift --body-file body.md
+          fi

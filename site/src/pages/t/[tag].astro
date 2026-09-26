@@ -1,0 +1,25 @@
+---
+import TipRow from '../../components/TipRow.astro';
+import Base from '../../layouts/Base.astro';
+import { categoryLabel, tags, tips } from '../../lib/site';
+
+export function getStaticPaths() {
+  return Object.entries(tags)
+    .filter(([tag]) => tips.some((t) => t.tags.includes(tag)))
+    .map(([tag, description]) => ({ params: { tag }, props: { tag, description } }));
+}
+
+const { tag, description } = Astro.props;
+const list = tips.filter((t) => t.tags.includes(tag));
+---
+
+<Base title={`#${tag}`} description={`${description}: ${list.length} tips.`}>
+  <header class="page-head pb">
+    <span class="label">Tag · {list.length} tips</span>
+    <h1>#{tag}</h1>
+    <p>{description}.</p>
+  </header>
+  <ul class="rows list">
+    {list.map((t) => <TipRow tip={t} showCategory={categoryLabel(t.category)} />)}
+  </ul>
+</Base>

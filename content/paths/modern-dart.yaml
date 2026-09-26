@@ -1,0 +1,11 @@
+title: Modern Dart
+summary: Records, patterns, sealed classes and the other Dart 3 features that change how everyday code reads. Best read in order.
+tips:
+  - records-multiple-returns
+  - destructure-lists
+  - switch-on-records
+  - json-pattern-matching
+  - sealed-class-result
+  - extension-types
+  - null-aware-elements
+  - future-wait-records

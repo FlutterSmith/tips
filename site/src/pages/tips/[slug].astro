@@ -1,0 +1,116 @@
+---
+import { getCollection, render } from 'astro:content';
+
+import TipRow from '../../components/TipRow.astro';
+import Base from '../../layouts/Base.astro';
+import { categoryLabel, formatDate, pad, site, tip, tips, tipUrl, url, type TipMeta } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const published = new Set(tips.map((t) => t.slug));
+  const entries = await getCollection('tips');
+  return entries.filter((e) => published.has(e.id)).map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+// Astro logs Markdown render errors and carries on; a tip without a body
+// must fail the build instead.
+if (!entry.rendered?.html) throw new Error(`Tip "${entry.id}" failed to render. See the [content] errors above.`);
+const meta = tip(entry.id) as TipMeta;
+const { Content } = await render(entry);
+const previous = meta.previous ? tip(meta.previous) : undefined;
+const next = meta.next ? tip(meta.next) : undefined;
+const related = meta.related.map(tip).filter((t): t is TipMeta => !!t);
+const verified = site.verifiedAt ? ` · ${formatDate(site.verifiedAt)}` : '';
+const level = meta.level[0].toUpperCase() + meta.level.slice(1);
+---
+
+<Base title={meta.title} description={meta.summary} slug={meta.slug}>
+  <article class="tip" data-pagefind-body data-pagefind-meta={`number:${pad(meta.number)}`}>
+    <div class="crumbs" data-pagefind-ignore>
+      <span><a href={url()}>Index</a> / <a href={url(`c/${meta.category}/`)}>{categoryLabel(meta.category)}</a> / {pad(meta.number)}</span>
+      <nav aria-label="Previous and next tip">
+        {previous && <a href={tipUrl(previous.slug)} data-rel="prev" rel="prev">← {pad(previous.number)}</a>}
+        {next && <a href={tipUrl(next.slug)} data-rel="next" rel="next">{pad(next.number)} →</a>}
+      </nav>
+    </div>
+
+    <h1 class="pb" style={`view-transition-name: t-${meta.slug}`} data-pagefind-meta="title">{meta.title}</h1>
+    <p class="metaline pb" data-pagefind-ignore>
+      <span>{level}</span>
+      <a href={url(`c/${meta.category}/`)}>{categoryLabel(meta.category)}</a>
+      <span>{meta.readingMinutes} min read</span>
+      {meta.tags.map((t) => <a href={url(`t/${t}/`)}>#{t}</a>)}
+      <span class="ok">✓ Verified · Flutter {site.flutter}{verified}</span>
+    </p>
+
+    {
+      meta.status === 'outdated' && (
+        <div class="banner" role="note">
+          <div class="stripe" />
+          <p>
+            <b>Outdated</b>The idea still holds, but the API has changed since this was written. Check the related tips below for the current way.
+          </p>
+        </div>
+      )
+    }
+    {
+      meta.experimental && (
+        <div class="banner info" role="note">
+          <div class="stripe" />
+          <p>
+            <b>Experimental</b>This uses an API marked experimental. It may change in a minor release.
+          </p>
+        </div>
+      )
+    }
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="related" data-pagefind-ignore aria-labelledby="related-label">
+          <div class="sec-h"><span class="label" id="related-label">Related</span></div>
+          <ul class="rows">
+            {related.map((r) => <TipRow tip={r} />)}
+          </ul>
+        </section>
+      )
+    }
+
+    <nav class="tip-foot" aria-label="More tips" data-pagefind-ignore>
+      {
+        previous && (
+          <a href={tipUrl(previous.slug)}>
+            <span class="label">← {pad(previous.number)}</span>
+            <span class="t">{previous.title}</span>
+          </a>
+        )
+      }
+      {
+        next && (
+          <a class="next" href={tipUrl(next.slug)}>
+            <span class="label">{pad(next.number)} →</span>
+            <span class="t">{next.title}</span>
+          </a>
+        )
+      }
+    </nav>
+
+    <p class="credit" data-pagefind-ignore>
+      {
+        meta.origin ? (
+          <>
+            {meta.origin.credit} <a href={meta.origin.url}>tip #{meta.origin.upstreamId}</a> in Flutter Tips &amp; Tricks by Andrea Bizzotto (MIT).
+            {meta.origin.change === 'rewritten' ? ' Rewritten for this project.' : ' Updated for current Flutter.'} Not affiliated with or
+            endorsed by the original author.{' '}
+          </>
+        ) : (
+          <>Written for this project. </>
+        )
+      }
+      <a href={`${site.repo}/edit/main/content/tips/${meta.slug}/index.md`}>Suggest an edit</a>.
+    </p>
+  </article>
+</Base>

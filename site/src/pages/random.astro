@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/site';
+---
+
+<Base title="Random tip" description="Opens a random tip." noindex>
+  <header class="page-head">
+    <span class="label">Random</span>
+    <h1>Picking a tip…</h1>
+    <p>If nothing happens, <a href={url('all/')}>browse all tips</a> instead.</p>
+  </header>
+  <script>
+    const slugs: string[] = JSON.parse(document.getElementById('tip-slugs')?.textContent ?? '[]');
+    const base = document.documentElement.dataset.base ?? '/';
+    if (slugs.length) location.replace(`${base}tips/${slugs[Math.floor(Math.random() * slugs.length)]}/`);
+  </script>
+</Base>

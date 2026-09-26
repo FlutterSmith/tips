@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  content:
+    name: Content rules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dart-lang/setup-dart@v1
+      - run: dart pub get
+        working-directory: tool
+      - name: Validate tips
+        run: dart run tool/bin/tips.dart validate
+      - name: Code excerpts match examples/
+        run: dart run tool/bin/tips.dart sync --check
+      - name: Generated files are current
+        run: dart run tool/bin/tips.dart generate --check
+
+  tool:
+    name: tips CLI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tool
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dart-lang/setup-dart@v1
+      - run: dart pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: dart analyze --fatal-infos
+      - run: dart test
+
+  examples:
+    name: Examples compile and pass
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          cache: true
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed lib test broken
+      - run: flutter analyze --fatal-infos lib test
+      - run: flutter test
+      - name: Broken examples fail as documented
+        working-directory: .
+        run: |
+          (cd tool && dart pub get)
+          dart run tool/bin/tips.dart check-broken
+
+  site:
+    name: Build site
+    needs: [content, tool, examples]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          cache: true
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: (cd tool && dart pub get)
+      - name: Generate site data
+        run: |
+          export TIPS_VERIFIED_AT="$(date -u +%F)"
+          export TIPS_DART_VERSION="$(dart --version 2>&1 | sed -E 's/.*version: ([0-9.]+).*/\1/')"
+          dart run tool/bin/tips.dart generate --site
+      - run: npm ci
+        working-directory: site
+      - run: npm run build
+        working-directory: site
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site/dist
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: site
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

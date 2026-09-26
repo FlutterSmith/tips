@@ -1,0 +1,25 @@
+---
+import { levelRank, pad, type TipMeta, tipUrl } from '../lib/site';
+
+interface Props {
+  tip: TipMeta;
+  showCategory?: string;
+}
+const { tip, showCategory } = Astro.props;
+const rank = levelRank[tip.level];
+---
+
+<li>
+  <a class="row dbg" href={tipUrl(tip.slug)}>
+    <span class="num">{pad(tip.number)}</span>
+    <span class="ttl"
+      ><span style={`view-transition-name: t-${tip.slug}`}>{tip.title}</span><span class="sub">{tip.summary}</span></span
+    >
+    <span class="meta">
+      <span class="pips" title={`${tip.level[0].toUpperCase()}${tip.level.slice(1)}`} aria-label={`Level: ${tip.level}`}>
+        {[1, 2, 3].map((i) => <i class={i <= rank ? 'f' : ''}></i>)}
+      </span>
+      {showCategory ?? tip.tags[0]}
+    </span>
+  </a>
+</li>

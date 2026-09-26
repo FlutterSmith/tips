@@ -1,0 +1,35 @@
+---
+import { toHtml } from 'hast-util-to-html';
+
+import { buildPanel } from '../lib/panel.mjs';
+import { pad, type TipMeta, tipUrl } from '../lib/site';
+
+interface Props {
+  tip: TipMeta;
+  code: string;
+  meta: string;
+}
+const { tip, code, meta } = Astro.props;
+const panel = await buildPanel({ code, lang: 'dart', meta });
+panel.children.push({
+  type: 'element',
+  tagName: 'div',
+  properties: { className: ['panel-foot'] },
+  children: [
+    {
+      type: 'element',
+      tagName: 'a',
+      properties: { href: tipUrl(tip.slug) },
+      children: [{ type: 'text', value: `#${pad(tip.number)} · ${tip.title}` }],
+    },
+    {
+      type: 'element',
+      tagName: 'button',
+      properties: { type: 'button', className: ['shuffle'], dataShuffle: '' },
+      children: [{ type: 'text', value: '↻ Another tip' }],
+    },
+  ],
+});
+---
+
+<Fragment set:html={toHtml(panel)} />

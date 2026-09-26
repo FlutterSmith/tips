@@ -1,0 +1,21 @@
+name: Tip idea
+description: Suggest something worth a tip.
+labels: [tip-idea]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: The tip in one or two sentences
+      placeholder: Use MediaQuery.sizeOf so a widget only rebuilds when the size changes.
+    validations: { required: true }
+  - type: textarea
+    id: code
+    attributes:
+      label: A code sketch (optional)
+      render: dart
+  - type: checkboxes
+    id: write
+    attributes:
+      label: Want to write it?
+      options:
+        - label: I'd like to open the PR myself

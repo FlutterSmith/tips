@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import { tips, tipUrl, url } from '../lib/site';
+
+const latest = tips.slice(0, 3);
+---
+
+<Base title="Not found" description="This page doesn't exist." noindex>
+  <div class="e404">
+    <div class="bar" aria-hidden="true"></div>
+    <div class="in">
+      <p class="err">A RenderFlex overflowed by 404 pixels on the right.</p>
+      <h1>This page doesn't exist.</h1>
+      <p style="margin: 0; color: var(--ink-2)">
+        It may have been renamed. Press <kbd>/</kbd> to search, or try one of these:
+      </p>
+      <ul id="closest">
+        {
+          latest.map((t) => (
+            <li>
+              <a href={tipUrl(t.slug)}>{t.title}</a>
+            </li>
+          ))
+        }
+        <li><a href={url('all/')}>All tips →</a></li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    // Suggest the tips whose slugs share the most words with the missing URL.
+    const slugs: string[] = JSON.parse(document.getElementById('tip-slugs')?.textContent ?? '[]');
+    const base = document.documentElement.dataset.base ?? '/';
+    const words = new Set(location.pathname.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 2));
+    const scored = slugs
+      .map((s) => ({ s, score: s.split('-').filter((w) => words.has(w)).length }))
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+    const list = document.getElementById('closest');
+    if (list && scored.length) {
+      list.replaceChildren(
+        ...scored.map(({ s }) => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `${base}tips/${s}/`;
+          a.textContent = s.replace(/-/g, ' ');
+          li.append(a);
+          return li;
+        }),
+      );
+    }
+  </script>
+</Base>

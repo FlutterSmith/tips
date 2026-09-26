@@ -1,0 +1,27 @@
+# Allowed tags. Keep them short and lowercase. Add one here before using it.
+accessibility: Screen readers, semantics and inclusive UI
+async: Futures, streams and async code
+buttons: Buttons and their styles
+collections: Lists, maps, sets and iterables
+context: BuildContext and where it's safe to use
+dart3: Features added in Dart 3 and later
+errors: Errors, exceptions and failure handling
+extension-types: Zero-cost wrapper types
+json: Parsing and producing JSON
+layout: Sizing, spacing and positioning widgets
+lifecycle: App and widget lifecycle
+migration: Moving from an older API to a newer one
+null-safety: Working with nullable values
+patterns: Pattern matching and destructuring
+performance: Speed, rebuilds and measuring
+progress: Loading and progress indicators
+providers: Riverpod providers and their types
+records: Dart records
+riverpod: Riverpod state management
+sealed-classes: Sealed classes and exhaustive switches
+testing: Tests and testability
+text: Text, selection and typography
+theming: Themes and styles
+timers: Timers, delays and debouncing
+types: The type system, from records to extension types
+widgets: Widget composition

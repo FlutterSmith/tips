@@ -1,0 +1,26 @@
+---
+import TipRow from '../components/TipRow.astro';
+import Base from '../layouts/Base.astro';
+import { categories, categoryLabel, tips, url } from '../lib/site';
+---
+
+<Base title="All tips" description={`All ${tips.length} tips, newest first.`}>
+  <header class="page-head pb">
+    <span class="label">Everything · newest first</span>
+    <h1>All {tips.length} tips</h1>
+    <ul class="chips" aria-label="Categories">
+      {
+        categories.map((c) => (
+          <li>
+            <a href={url(`c/${c.id}/`)}>
+              {c.label} {c.count}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </header>
+  <ul class="rows list">
+    {tips.map((t) => <TipRow tip={t} showCategory={categoryLabel(t.category)} />)}
+  </ul>
+</Base>

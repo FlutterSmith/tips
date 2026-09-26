@@ -1,0 +1,20 @@
+name: tips_examples
+description: The verified source of every code snippet in fluttersmith/tips.
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
+
+dependencies:
+  collection: ^1.19.0
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^3.0.0
+
+dev_dependencies:
+  fake_async: ^1.3.0
+  flutter_lints: ^6.0.0
+  flutter_test:
+    sdk: flutter
