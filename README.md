@@ -1,16 +1,89 @@
-<p>
+<a href="https://fluttersmith.github.io/tips/">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/wordmark-dark.svg">
-    <img alt="fluttersmith/tips" src=".github/assets/wordmark-light.svg" width="360">
+    <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.png">
+    <img alt="fluttersmith/tips: Flutter tips that still compile. A code panel shows a Riverpod FutureProvider with two handwritten notes pointing at the lines they explain." src=".github/assets/banner-light.png" width="100%">
   </picture>
+</a>
+
+<p align="center">
+  <a href="https://fluttersmith.github.io/tips/"><b>Read on the web</b></a> ·
+  <a href="CATALOG.md">All tips</a> ·
+  <a href="#learning-paths">Learning paths</a> ·
+  <a href="CONTRIBUTING.md">Write a tip</a>
 </p>
 
-**Flutter tips that still compile.** Short, practical notes on Dart, widgets and Riverpod. Every snippet on the site is real code that CI analyzes and tests against the current Flutter stable release.
+<p align="center">
+  <a href="https://github.com/FlutterSmith/tips/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/FlutterSmith/tips/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="30 tips" src="https://img.shields.io/badge/tips-30-121722">
+  <img alt="Flutter 3.47" src="https://img.shields.io/badge/Flutter-3.47-0B7F9C">
+  <img alt="Dart 3.13" src="https://img.shields.io/badge/Dart-3.13-0B7F9C">
+  <img alt="Riverpod 3" src="https://img.shields.io/badge/Riverpod-3-0B7F9C">
+  <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-FFD54A"></a>
+</p>
 
-[![CI](https://github.com/FlutterSmith/tips/actions/workflows/ci.yml/badge.svg)](https://github.com/FlutterSmith/tips/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-0B7F9C)](LICENSE)
+Short, practical notes on Dart, Flutter widgets and Riverpod, for developers who already ship Flutter apps and want the small things that make code cleaner, faster and safer.
 
-**Read it on the web: [fluttersmith.github.io/tips](https://fluttersmith.github.io/tips/)**. It has search that finds API names, annotated code, dark mode and keyboard shortcuts. Everything below also works right here on GitHub.
+The difference from every other tips list: **you can't break one of these without CI noticing.** Every snippet is copied from real code that is analyzed with strict lints and covered by a test. Once a week the whole collection is rebuilt against the newest Flutter release, and anything that stops compiling gets flagged.
+
+## A tip in twenty seconds
+
+This is what a snippet looks like in the source. The `// @note` lines are the author talking to you:
+
+```dart
+final totalProvider = FutureProvider<int>((ref) async {
+  // @note .future is the Future behind the provider
+  final a = await ref.watch(firstProvider.future);
+  final b = await ref.watch(secondProvider.future);
+  // @note plain async code from here on
+  return a + b;
+});
+```
+
+On the website those notes turn into handwritten margin notes, with an arrow drawn to the exact line:
+
+<img alt="The same snippet on the website in dark mode. Two handwritten yellow notes sit in a lane to the right of the code, each with a hand-drawn arrow pointing at its line." src=".github/assets/screens/tip-dark.png" width="100%">
+
+The code isn't pasted into the tip. `tips sync` copies it from [`examples/`](examples/lib/tips/future-provider-future/combine.dart), where a [test](examples/test/tips/future_provider_future_test.dart) checks that the provider really waits for both inputs, really surfaces loading, and really picks up overrides.
+
+## What you get
+
+| | |
+|:--|:--|
+| **Code you can copy** | Every snippet is text, never a screenshot. One click copies it without the notes. |
+| **Proof, not promises** | 128 tests back the 30 tips. "Don't do this" examples live in [`examples/broken/`](examples/broken) and CI checks they fail with exactly the error the tip describes. |
+| **Current APIs** | Written for Flutter 3.47, Dart 3.13 and Riverpod 3. Every tip shows the version it was last verified against. |
+| **Search that knows code** | Type `requireValue` or `ref.listen` and land on the right tip. Search reads the snippets, not just the titles. |
+| **Built to learn from** | Categories, tags, three ordered learning paths, and a level on every tip. |
+| **Readable anywhere** | Light and dark themes, works on a phone, full keyboard navigation, and alt text required on every image. |
+
+## A quick tour
+
+<table>
+  <tr>
+    <td width="50%"><img alt="Home page: the headline Flutter tips that still compile, a rotating annotated snippet, a widget-tree index of categories and the latest tips." src=".github/assets/screens/home.png"></td>
+    <td width="50%"><img alt="An Avoid and a Prefer code panel side by side, comparing DateTime.now with Stopwatch." src=".github/assets/screens/dodont.png"></td>
+  </tr>
+  <tr>
+    <td><b>Home.</b> The index is laid out as a widget tree. The snippet on the right rotates through real tips.</td>
+    <td><b>Avoid / Prefer.</b> Side-by-side comparisons, marked with a shape and a label as well as a colour.</td>
+  </tr>
+  <tr>
+    <td><img alt="The search palette open over the home page, showing a match for requireValue with the matched word highlighted." src=".github/assets/screens/search.png"></td>
+    <td><img alt="Debug paint mode: cyan outlines with pixel sizes drawn around every block on the page." src=".github/assets/screens/paint.png"></td>
+  </tr>
+  <tr>
+    <td><b>Search.</b> Press <kbd>/</kbd> anywhere. It finds API names inside code.</td>
+    <td><b>Paint.</b> Press <kbd>p</kbd> to see the page the way <code>debugPaintSizeEnabled</code> shows a Flutter app.</td>
+  </tr>
+  <tr>
+    <td><img alt="The 404 page with yellow and black overflow stripes and the line: A RenderFlex overflowed by 404 pixels on the right." src=".github/assets/screens/404.png"></td>
+    <td align="center"><img alt="A tip about Column spacing on a phone, with numbered note markers in the code and the notes listed underneath." src=".github/assets/screens/phone.png" width="60%"></td>
+  </tr>
+  <tr>
+    <td><b>Not found.</b> You'll recognise the stripes.</td>
+    <td><b>On a phone.</b> Notes become numbered markers, listed under the code.</td>
+  </tr>
+</table>
 
 ## The tips
 
@@ -67,38 +140,69 @@
 
 The full numbered list is in [CATALOG.md](CATALOG.md).
 
+## Learning paths
+
+Some tips are better read in order:
+
+- **[Modern Dart](https://fluttersmith.github.io/tips/paths/modern-dart/)**: records, patterns, sealed classes and extension types, in eight steps.
+- **[Riverpod 3 from zero](https://fluttersmith.github.io/tips/paths/riverpod-3/)**: from what a provider is to async state, arguments and safe updates, in ten.
+- **[Cleaner widget code](https://fluttersmith.github.io/tips/paths/cleaner-widgets/)**: seven habits that make build methods shorter and rebuilds cheaper.
+
+## Keyboard shortcuts
+
+| Key | Does |
+|:--|:--|
+| <kbd>/</kbd> | Search |
+| <kbd>r</kbd> | Random tip |
+| <kbd>←</kbd> <kbd>→</kbd> | Previous / next tip |
+| <kbd>c</kbd> | Copy the first snippet |
+| <kbd>p</kbd> | Debug paint on or off |
+| <kbd>t</kbd> | Theme: system, light, dark |
+
 ## How it stays correct
 
+```mermaid
+flowchart LR
+  A["examples/<br/>real Dart code"] -->|"flutter analyze<br/>flutter test"| B{"CI"}
+  A -->|"tips sync"| C["content/tips/<br/>Markdown tips"]
+  C -->|"tips validate"| B
+  D["examples/broken/<br/>code that must fail"] -->|"tips check-broken"| B
+  B -->|"green on main"| E["Website<br/>GitHub Pages"]
+  F["Weekly: newest Flutter<br/>and dependencies"] --> B
 ```
-examples/lib/tips/<slug>/*.dart   real code, analyzed with strict lints
-examples/test/tips/*_test.dart    tests that prove what each tip claims
-content/tips/<slug>/index.md      the tip; code blocks are copied in from examples/
-tool/                             the `tips` CLI: sync, validate, generate
-site/                             the website (Astro + Pagefind)
+
+```
+content/tips/<slug>/index.md        the tip: frontmatter, prose, excerpt markers
+examples/lib/tips/<slug>/*.dart     the code, with #docregion and // @note markers
+examples/test/tips/*_test.dart      tests that prove each tip's claim
+examples/broken/<slug>/*.dart       counter-examples, each with the error it must produce
+tool/                               the tips CLI: new, sync, validate, generate, check-broken
+site/                               the website (Astro, Pagefind)
 ```
 
-- A tip never contains hand-typed Dart. `tips sync` copies each snippet from `examples/`, and CI fails if a tip and its source drift apart.
-- Code that is supposed to fail (the "don't do this" examples) lives in `examples/broken/` and CI checks that it fails with exactly the expected error.
-- Every week CI re-runs everything against the newest Flutter stable and opens an issue if a tip stops compiling.
+## Run it locally
 
-## Why this exists
+You need Flutter (the version is pinned in [`.fvmrc`](.fvmrc)) and, for the website, Node 22.
 
-This project started from Andrea Bizzotto's [Flutter Tips & Tricks](https://github.com/bizz84/flutter-tips-and-tricks), a great collection of tips first shared on social media between 2021 and 2024. The ideas are excellent, but most of the code lives in screenshots, and the Flutter ecosystem has moved on since (Riverpod 3, Dart 3 patterns, new widget APIs).
+```sh
+(cd tool && dart pub get) && (cd examples && flutter pub get)
+dart run tool/bin/tips.dart validate          # content rules
+(cd examples && flutter analyze lib test && flutter test)
 
-| | Original collection | This project |
-|:--|:--|:--|
-| Code | Screenshots, mostly | Text you can copy, analyzed and tested in CI |
-| Up to date | Last updated June 2024 | Checked weekly against current Flutter |
-| Finding things | One chronological list | Categories, tags, learning paths, full-text search |
-| Accessibility | Most images have no alt text | Alt text required; code is real text |
-| Annotations | Hand-drawn arrows on images | Handwritten notes on real code, kept next to the line they explain |
+dart run tool/bin/tips.dart generate --site   # data for the website
+cd site && npm ci && npm run build && npm run preview
+```
 
-Tips adapted from the original credit it on every page. See [ATTRIBUTION.md](ATTRIBUTION.md).
+Or open the repo in a Codespace. The dev container has everything installed.
 
 ## Contributing
 
-Typos and wording fixes need nothing but a pull request. New tips need Flutter and one command to scaffold; [CONTRIBUTING.md](CONTRIBUTING.md) walks through it.
+Spotted a typo or an outdated API? Edit the Markdown and open a pull request; you don't need Flutter for that. Want to add a tip? `dart run tool/bin/tips.dart new "Your title" -c dart` scaffolds the tip, its example and its test. [CONTRIBUTING.md](CONTRIBUTING.md) covers the format and the voice.
+
+## Credits
+
+This project grew out of Andrea Bizzotto's [Flutter Tips & Tricks](https://github.com/bizz84/flutter-tips-and-tricks), a well-loved collection first shared on social media between 2021 and 2024. Many tips here are adapted from it or inspired by it, and each one links back to its original. The code was rewritten for current Flutter, Dart and Riverpod, and it is now compiled and tested. See [ATTRIBUTION.md](ATTRIBUTION.md) for the full list. This project is not affiliated with or endorsed by the original author.
 
 ## License
 
-[MIT](LICENSE). Portions adapted from Flutter Tips & Tricks, Copyright (c) 2022 Andrea Bizzotto, also MIT.
+[MIT](LICENSE). Portions adapted from Flutter Tips & Tricks, Copyright (c) 2022 Andrea Bizzotto, also under the MIT License.
