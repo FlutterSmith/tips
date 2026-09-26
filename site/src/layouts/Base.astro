@@ -20,6 +20,7 @@ const { title, description, slug, noindex = false } = Astro.props;
 const fullTitle = title ? `${title} · ${site.name}` : `${site.name}: Flutter tips that still compile`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const slugs = JSON.stringify(tips.map((t) => t.slug));
+const ogImage = new URL(url('og.png'), Astro.site);
 ---
 
 <!doctype html>
@@ -35,6 +36,11 @@ const slugs = JSON.stringify(tips.map((t) => t.slug));
     <meta property="og:title" content={title ?? site.name} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta property="og:image:alt" content="Flutter tips that still compile: an annotated Riverpod snippet." />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#EEF1F4" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0B0F17" media="(prefers-color-scheme: dark)" />
     <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />

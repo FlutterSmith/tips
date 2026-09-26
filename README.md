@@ -199,6 +199,8 @@ Or open the repo in a Codespace. The dev container has everything installed.
 
 Spotted a typo or an outdated API? Edit the Markdown and open a pull request; you don't need Flutter for that. Want to add a tip? `dart run tool/bin/tips.dart new "Your title" -c dart` scaffolds the tip, its example and its test. [CONTRIBUTING.md](CONTRIBUTING.md) covers the format and the voice.
 
+Curious why it's built this way? The original analysis, the plan and the design notes are in [`docs/`](docs/).
+
 ## Credits
 
 This project grew out of Andrea Bizzotto's [Flutter Tips & Tricks](https://github.com/bizz84/flutter-tips-and-tricks), a well-loved collection first shared on social media between 2021 and 2024. Many tips here are adapted from it or inspired by it, and each one links back to its original. The code was rewritten for current Flutter, Dart and Riverpod, and it is now compiled and tested. See [ATTRIBUTION.md](ATTRIBUTION.md) for the full list. This project is not affiliated with or endorsed by the original author.
